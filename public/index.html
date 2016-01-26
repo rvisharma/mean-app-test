@@ -1,0 +1,120 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta http-equiv="Content-Type" content="text/html;charset=utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <link rel="shortcut icon" href="http://teamtreehouse.com/assets/favicon.ico">
+    <link rel="icon" href="http://teamtreehouse.com/assets/favicon.ico">
+    <title>MEAN Application</title>
+    <link href="./assets/bower_components/bootstrap/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link href="./stylesheets/style.css" rel="stylesheet">
+</head>
+<body ng-app="meanApp" class="container">
+    <div class="row">
+        <div class="col-lg-offset-4 col-md-offset-4 col-lg-4 col-md-4 col-sm-12">
+            <div class="auth-container" ng-controller="authController as ctrl">
+        <form role="form" ng-submit="ctrl.login()" ng-hide="currentUser.isAuthenticated">
+            <div class="form-group">
+                <label for="username">Username:</label>
+                <input type="username"  required
+                class="form-control" id="username"
+                ng-model="ctrl.user.username">
+            </div>
+            <div class="form-group">
+                <label for="pwd">Password:</label>
+                <input type="password" class="form-control" id="pwd" required
+                ng-model="ctrl.user.formPassword">
+            </div>
+            
+            <button type="submit" 
+            ng-hide="ctrl.user.isAuthenticated"
+            class="btn btn-default">Log In</button>
+            <button type="button" ng-click="ctrl.signup()"
+            ng-hide="ctrl.user.isAuthenticated"
+            class="btn btn-secondary">Sign Up</button>
+        </form>
+        <button type="submit" ng-click="ctrl.logout()"
+            ng-show="ctrl.user.isAuthenticated"
+            class="btn btn-danger signout-button">Sign Out</button>
+        </div> <!-- End of Auth Container -->       
+        </div>
+    </div>
+    <br><hr>
+    <div ng-controller="postController as ctrl">
+    <div class="page-header">
+        <h2>Total Posts : {{ctrl.posts.length}}
+        <button type="button" 
+            class="btn btn-primary" 
+            ng-click="ctrl.getAllPosts()">Refresh Feed</button>    
+        </h2>
+    </div>
+        <div class="add-post-container" >
+            <div class="row">
+                <div class="col-lg-4 col-md-4 col-sm-12">
+                    <form role="form" ng-submit="ctrl.addPost()">
+                        <div class="form-group">
+                            <label for="post">Add New Post</label>
+                            <textarea name="post" id="post" class="form-control" 
+                                rows="3" required="required"
+                                ng-disabled="!currentUser.isAuthenticated"
+                                ng-model="ctrl.post.text"></textarea>
+                        </div>
+                        
+                        <button type="submit"
+                            ng-disabled="!currentUser.isAuthenticated"
+                            class="btn btn-default">Submit</button>
+                        <span ng-show="!currentUser.isAuthenticated"><em>
+                            <small class="text-danger">You need to be logged in to submit a new post</small>
+                            </em>
+                        </span>
+                    </form>
+                </div>
+            </div>
+        </div>
+
+
+
+<div class="posts-container container">
+    
+    <table class="table table-hover" ng-show="ctrl.posts.length">
+        <thead>
+            <tr>
+                <th>Sr No</th>
+                <th>Post</th>
+                <th>Author</th>
+                <th>Created on</th>
+                <th>Action</th>
+            </tr>
+        </thead>
+        <tbody>
+            <tr ng-repeat="post in ctrl.posts | orderBy:'created_at'">
+                <td>{{$index+1}}</td>
+                <td>{{post.text}}</td>
+                <td>{{post.username}}</td>
+                <td>{{post.created_at | date:'short'}}</td>
+                <td><button class="btn btn-small btn-danger" 
+                ng-click="ctrl.deletePost(post._id)"
+                ng-disabled="!ctrl.checkAuthor(post.created_by)">Delete</button>
+                <button class="btn btn-small btn-info" 
+                ng-click=""
+                ng-disabled="!ctrl.checkAuthor(post.created_by)">Edit</button></td>
+            </tr>
+        </tbody>
+    </table>
+</div>
+        
+    </div>
+    
+    <!--Asset Scripts-->
+    <script src="assets/bower_components/jquery/dist/jquery.min.js"></script>
+    <script src="assets/bower_components/bootstrap/dist/js/bootstrap.js"></script>
+    <script src="assets/bower_components/angular/angular.min.js"></script>
+    <script src="assets/bower_components/angular-animate/angular-animate.min.js"></script>
+    <script src="assets/bower_components/angular-bootstrap/ui-bootstrap-tpls.min.js"></script>
+    <script src="assets/bower_components/underscore/underscore-min.js"></script>
+    <!--Application Scripts-->
+    <script src="javascripts/app.js"></script>
+    <script src="javascripts/controllers/postController.js"></script>
+    <script src="javascripts/controllers/authController.js"></script>
+</body>
+</html>
